@@ -44,8 +44,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return 204;
 // });
 
-Route::get('articles','ArticleController@index');
-Route::get('articles/{article}','ArticleController@show');
-Route::post('articles','ArticleController@store');
-Route::put('articles/{article}','ArticleController@update');
-Route::delete('articles/{article}','ArticleController@delete');
+// Route::get('articles','ArticleController@index');
+// Route::get('articles/{article}','ArticleController@show');
+// Route::post('articles','ArticleController@store');
+// Route::put('articles/{article}','ArticleController@update');
+// Route::delete('articles/{article}','ArticleController@delete');
+
+Route::apiResource('/product','ProductController');
+
+Route::group(['prefix' => 'product'], function () {
+    Route::apiResource('/{product}/review', 'ReviewController');
+});
