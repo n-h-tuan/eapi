@@ -8,9 +8,12 @@ use Illuminate\Http\Respone;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Requests\ProductRequest;
-
+use Illuminate\Support\Facades\Auth;
+use App\Exceptions\ProductNotBelongToUser;
+// use Auth;
 class ProductController extends Controller
 {
+    
     public function __construct()
     {
         $this->middleware('auth:api')->except('index','show');
@@ -82,6 +85,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->checkUser($product);
         $product->update($request->all());
 
         return response([
@@ -97,7 +101,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $this->checkUser($product);
         $product->delete();
         return response(null,204);
+    }
+
+    public function checkUser($product)
+    {
+        if(Auth::user()->id != $product->user_id)
+        {
+            throw new ProductNotBelongToUser;
+        }
     }
 }
