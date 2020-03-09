@@ -32,6 +32,7 @@ class ArticleController extends Controller
     }
 
     // I commit on master branch
+    // Another commit on master branch
 
     public function delete (Article $article)
     {
