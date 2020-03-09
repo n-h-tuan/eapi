@@ -31,6 +31,8 @@ class ArticleController extends Controller
         return response()->json($article, 200);
     }
 
+    // I commit on master branch
+
     public function delete (Article $article)
     {
         $article->delete();
