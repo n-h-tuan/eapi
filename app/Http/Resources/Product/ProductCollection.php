@@ -20,7 +20,7 @@ class ProductCollection extends JsonResource
             'price' => $this->price,
             'stock' => $this->stock,
             'link' => [
-                'href' => route('product.show',$this->id),
+                'href' => route('product.show', $this->id),
             ]
         ];
     }

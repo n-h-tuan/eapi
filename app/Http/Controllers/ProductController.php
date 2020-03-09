@@ -16,16 +16,27 @@ class ProductController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index','show');
+        // $this->middleware('auth:api')->except('index','show',);
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+    public function getProduct($id)
+    {
+        $staticJSON = file_get_contents("http://localhost:8000/api/product/".$id);
+        $decodeJSON = json_decode($staticJSON);
+        
+        $objProduct = $decodeJSON;
+
+        return view('product',['objProduct'=>$objProduct]);
+    }
+
     public function index()
     {
         return ProductCollection::collection(Product::paginate(5));
+        // return ProductCollection::collection(Product::all());
         // return Product::all();
     }
 
@@ -50,6 +61,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->stock = $request->stock;
         $product->discount = $request->discount;
+        $product->user_id = $request->user_id;
         $product->save();
         return response([
             'data' => new ProductResource($product),
@@ -85,12 +97,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $this->checkUser($product);
+        // $this->checkUser($product);
         $product->update($request->all());
 
-        return response([
-            'data' => new ProductResource($product),
-        ],202);
+        // return response([
+        //     'data' => new ProductResource($product),
+        // ],202);
+        return redirect('/');
     }
 
     /**
@@ -101,7 +114,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $this->checkUser($product);
+        // $this->checkUser($product);
         $product->delete();
         return response(null,204);
     }
@@ -112,5 +125,25 @@ class ProductController extends Controller
         {
             throw new ProductNotBelongToUser;
         }
+    }
+
+    public function loginUser(Request $request)
+    {
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+        {    
+            // return \response([
+            //     'data' => [
+            //         'id' =>Auth::user()->id,
+            //         'name' => Auth::user()->name,
+            //         'email' => Auth::user()->email,
+            //     ]
+            // ],202);
+            return redirect('/');
+    
+        }
+        else
+            return \response([
+                'data' => 'Wrong email or password',
+            ],200);
     }
 }

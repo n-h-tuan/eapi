@@ -55,3 +55,6 @@ Route::apiResource('/product','ProductController');
 Route::group(['prefix' => 'product'], function () {
     Route::apiResource('/{product}/review', 'ReviewController');   
 });
+
+Route::post('login','ProductController@loginUser');
+Route::get('guzzle','GuzzleController@DanhSach');
